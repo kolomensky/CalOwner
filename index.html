@@ -145,24 +145,6 @@
       margin-bottom: 8px;
     }
 
-    .pill button {
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 0 2px;
-      font-size: 16px;
-      line-height: 1;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: auto;
-    }
-
-    .pill button:hover {
-      color: var(--danger);
-    }
-
     .pill .dot {
       width: 10px;
       height: 10px;
@@ -249,64 +231,6 @@
         grid-template-columns: 1fr;
       }
     }
-
-    .week {
-      display: grid;
-      gap: 12px;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
-
-    .day {
-      padding: 14px;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      display: grid;
-      gap: 10px;
-      min-height: 150px;
-    }
-
-    .day h3 {
-      margin: 0;
-      font-size: 16px;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .day .event-item {
-      background: rgba(255, 255, 255, 0.04);
-      border-radius: 12px;
-      padding: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      display: grid;
-      gap: 6px;
-    }
-
-    .muted-note {
-      color: var(--muted);
-      font-size: 14px;
-      margin: 4px 0 0;
-    }
-
-    .stack {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .file-hint {
-      color: var(--muted);
-      font-size: 13px;
-      margin: 4px 0 0;
-    }
-
-    .status {
-      font-size: 14px;
-      color: var(--muted);
-      margin-top: 8px;
-    }
   </style>
 </head>
 <body>
@@ -315,12 +239,12 @@
       <span class="dot" style="background:#22c55e"></span>
       <span class="count" id="calendarCount">0</span> календарей объединено
     </p>
-      <h1>Единое расписание</h1>
-      <p class="lead">
-        Подключайте личные и рабочие календари по ссылке или вручную, добавляйте события и выгружайте объединённое расписание в формате ICS.
-        Страница хранит данные в локальной базе браузера (IndexedDB), чтобы они были доступны офлайн.
-      </p>
-    </header>
+    <h1>Единое расписание</h1>
+    <p class="lead">
+      Подключайте личные и рабочие календари, добавляйте события и выгружайте объединённое расписание в формате ICS.
+      Страница хранит данные только в вашем браузере.
+    </p>
+  </header>
 
   <main>
     <section class="grid">
@@ -337,28 +261,6 @@
         </form>
 
         <div class="calendar-list" id="calendarList"></div>
-      </article>
-
-      <article class="card">
-        <h2><span class="icon">🌐</span>Подключить ICS-ссылку</h2>
-        <form id="remoteForm">
-          <label for="remoteUrl">Ссылка на календарь (ics)</label>
-          <input id="remoteUrl" name="remoteUrl" type="url" placeholder="https://example.com/calendar.ics" required />
-
-          <label for="remoteName">Название</label>
-          <input id="remoteName" name="remoteName" placeholder="Название для этого календаря" />
-
-          <label for="remoteColor">Цвет</label>
-          <input id="remoteColor" name="remoteColor" type="color" value="#22c55e" />
-
-          <button type="submit">Подключить календарь по ссылке</button>
-        </form>
-
-        <div class="toolbar" style="margin-top:12px">
-          <button class="secondary" id="refreshRemote">Обновить подключённые</button>
-        </div>
-
-        <p class="empty" id="remoteStatus" style="margin-top:12px">Подключите хотя бы одну ссылку, чтобы подтянуть готовые события.</p>
       </article>
 
       <article class="card">
@@ -392,41 +294,8 @@
     </section>
 
     <section class="card">
-      <h2><span class="icon">📂</span>Импорт файлов</h2>
-      <form id="fileForm" class="stack">
-        <div>
-          <label for="fileInput">Выберите .ics или calendar.html</label>
-          <input
-            id="fileInput"
-            name="fileInput"
-            type="file"
-            accept=".ics,.ical,.ifb,.icalendar,.html,text/calendar,text/html"
-          />
-          <p class="file-hint">ICS импортируется напрямую. Для HTML пытаемся извлечь события из текста страницы.</p>
-        </div>
-        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
-          <div>
-            <label for="fileCalendarName">Название календаря</label>
-            <input id="fileCalendarName" name="fileCalendarName" placeholder="Импортированный календарь" />
-          </div>
-          <div>
-            <label for="fileCalendarColor">Цвет</label>
-            <input id="fileCalendarColor" name="fileCalendarColor" type="color" value="#a855f7" />
-          </div>
-        </div>
-        <button type="submit">Импортировать и сохранить</button>
-      </form>
-      <p class="status" id="fileStatus">Поддерживаются offline-файлы ICS и HTML.</p>
-    </section>
-
-    <section class="card">
       <h2><span class="icon">🧭</span>Ближайшие события</h2>
       <div class="events" id="events"></div>
-    </section>
-
-    <section class="card">
-      <h2><span class="icon">🗓️</span>Рабочая неделя</h2>
-      <div class="week" id="weekView"></div>
     </section>
   </main>
 
@@ -439,98 +308,23 @@
     const eventCalendar = document.getElementById("eventCalendar");
     const exportBtn = document.getElementById("exportBtn");
     const clearBtn = document.getElementById("clearBtn");
-    const remoteForm = document.getElementById("remoteForm");
-    const remoteStatus = document.getElementById("remoteStatus");
-    const refreshRemote = document.getElementById("refreshRemote");
-    const weekView = document.getElementById("weekView");
-    const fileForm = document.getElementById("fileForm");
-    const fileInput = document.getElementById("fileInput");
-    const fileCalendarName = document.getElementById("fileCalendarName");
-    const fileCalendarColor = document.getElementById("fileCalendarColor");
-    const fileStatus = document.getElementById("fileStatus");
 
     const state = {
       calendars: [],
       events: [],
     };
 
-    let dbPromise = null;
-
-    function openDB() {
-      if (dbPromise) return dbPromise;
-      dbPromise = new Promise((resolve, reject) => {
-        const request = indexedDB.open("calendar-hub-db", 1);
-        request.onupgradeneeded = (event) => {
-          const db = event.target.result;
-          if (!db.objectStoreNames.contains("calendars")) {
-            db.createObjectStore("calendars", { keyPath: "id" });
-          }
-          if (!db.objectStoreNames.contains("events")) {
-            db.createObjectStore("events", { keyPath: "id" });
-          }
-        };
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
-      return dbPromise;
-    }
-
-    function txDone(tx) {
-      return new Promise((resolve, reject) => {
-        tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error);
-        tx.onabort = () => reject(tx.error);
-      });
-    }
-
-    async function saveState() {
+    function saveState() {
       localStorage.setItem("calendar-hub", JSON.stringify(state));
-      try {
-        const db = await openDB();
-        const tx = db.transaction(["calendars", "events"], "readwrite");
-        const calStore = tx.objectStore("calendars");
-        const evStore = tx.objectStore("events");
-        calStore.clear();
-        evStore.clear();
-        state.calendars.forEach((c) => calStore.put(c));
-        state.events.forEach((e) => evStore.put(e));
-        await txDone(tx);
-      } catch (e) {
-        console.warn("IndexedDB: не удалось сохранить", e);
-      }
     }
 
-    async function loadState() {
-      let loaded = false;
-      try {
-        const db = await openDB();
-        const tx = db.transaction(["calendars", "events"], "readonly");
-        const calStore = tx.objectStore("calendars");
-        const evStore = tx.objectStore("events");
-        const calendars = await calStore.getAll();
-        const events = await evStore.getAll();
-        await txDone(tx);
-        if (calendars.length || events.length) {
-          state.calendars = calendars;
-          state.events = events;
-          loaded = true;
-        }
-      } catch (e) {
-        console.warn("IndexedDB: не удалось загрузить", e);
-      }
-
-      if (loaded) return;
-
+    function loadState() {
       const saved = localStorage.getItem("calendar-hub");
       if (!saved) return;
       try {
         const data = JSON.parse(saved);
-        state.calendars = Array.isArray(data.calendars)
-          ? data.calendars.map((c) => ({ type: c.type || "local", ...c }))
-          : [];
-        state.events = Array.isArray(data.events)
-          ? data.events.map((e) => ({ origin: e.origin || "local", ...e }))
-          : [];
+        state.calendars = Array.isArray(data.calendars) ? data.calendars : [];
+        state.events = Array.isArray(data.events) ? data.events : [];
       } catch (e) {
         console.warn("Не удалось загрузить сохранённые данные", e);
       }
@@ -546,17 +340,6 @@
       });
     }
 
-    function renderRemoteStatus() {
-      const remoteCalendars = state.calendars.filter((c) => c.type === "remote");
-      if (!remoteCalendars.length) {
-        remoteStatus.textContent = "Подключите хотя бы одну ссылку, чтобы подтянуть готовые события.";
-        remoteStatus.className = "empty";
-        return;
-      }
-      remoteStatus.textContent = `Подключено ${remoteCalendars.length} ссылок. Нажмите “Обновить подключённые”, чтобы синхронизировать.`;
-      remoteStatus.className = "muted-note";
-    }
-
     function renderCalendars() {
       calendarCount.textContent = state.calendars.length;
       calendarList.innerHTML = "";
@@ -570,7 +353,6 @@
         placeholder.selected = true;
         eventCalendar.appendChild(placeholder);
         eventCalendar.disabled = true;
-        renderRemoteStatus();
         return;
       }
 
@@ -583,38 +365,11 @@
         dot.style.background = cal.color;
         const name = document.createElement("span");
         name.textContent = cal.name;
-        if (cal.type === "remote") {
-          const remoteIcon = document.createElement("span");
-          remoteIcon.textContent = "🌐";
-          name.prepend(remoteIcon, " ");
-        }
-        if (cal.type === "file") {
-          const fileIcon = document.createElement("span");
-          fileIcon.textContent = "📂";
-          name.prepend(fileIcon, " ");
-        }
-        if (cal.lastSynced && cal.type === "remote") {
-          const synced = document.createElement("span");
-          synced.style.fontSize = "11px";
-          synced.style.color = "var(--muted)";
-          synced.textContent = new Date(cal.lastSynced).toLocaleString("ru-RU", {
-            hour: "2-digit",
-            minute: "2-digit",
-            day: "2-digit",
-            month: "short",
-          });
-          name.append(" • ", synced);
-        }
         const count = document.createElement("span");
         count.className = "count";
         const eventCount = state.events.filter((e) => e.calendarId === cal.id).length;
         count.textContent = `${eventCount}`;
-        const removeBtn = document.createElement("button");
-        removeBtn.type = "button";
-        removeBtn.title = "Удалить календарь";
-        removeBtn.textContent = "×";
-        removeBtn.addEventListener("click", () => handleRemoveCalendar(cal.id));
-        pill.append(dot, name, count, removeBtn);
+        pill.append(dot, name, count);
         calendarList.appendChild(pill);
 
         const option = document.createElement("option");
@@ -622,23 +377,6 @@
         option.textContent = cal.name;
         eventCalendar.appendChild(option);
       });
-
-      renderRemoteStatus();
-    }
-
-    async function handleRemoveCalendar(id) {
-      const calendar = state.calendars.find((c) => c.id === id);
-      if (!calendar) return;
-      const confirmed = confirm(
-        `Удалить календарь «${calendar.name}» и связанные с ним события?`
-      );
-      if (!confirmed) return;
-      state.calendars = state.calendars.filter((c) => c.id !== id);
-      state.events = state.events.filter((e) => e.calendarId !== id);
-      await saveState();
-      renderCalendars();
-      renderEvents();
-      renderWeek();
     }
 
     function renderEvents() {
@@ -674,22 +412,13 @@
         const location = document.createElement("span");
         location.textContent = event.location || "Онлайн";
 
-        const source = document.createElement("span");
-        source.textContent =
-          event.origin === "remote"
-            ? "По ссылке"
-            : event.origin === "file"
-            ? "Файл"
-            : "Лично";
-        source.style.fontWeight = "600";
-
-        meta.append(badge, time, location, source);
+        meta.append(badge, time, location);
         wrapper.append(title, meta);
         eventsEl.appendChild(wrapper);
       });
     }
 
-    calendarForm.addEventListener("submit", async (e) => {
+    calendarForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const name = calendarForm.calendarName.value.trim();
       if (!name) return;
@@ -698,16 +427,15 @@
         id: crypto.randomUUID(),
         name,
         color: calendarForm.calendarColor.value,
-        type: "local",
       });
 
       calendarForm.reset();
       calendarForm.calendarColor.value = "#06b6d4";
-      await saveState();
+      saveState();
       renderCalendars();
     });
 
-    eventForm.addEventListener("submit", async (e) => {
+    eventForm.addEventListener("submit", (e) => {
       e.preventDefault();
       if (!state.calendars.length) return;
 
@@ -718,7 +446,6 @@
         start: eventForm.eventStart.value,
         end: eventForm.eventEnd.value,
         location: eventForm.eventLocation.value.trim(),
-        origin: "local",
       };
 
       if (!payload.title || !payload.start || !payload.end) return;
@@ -729,10 +456,9 @@
 
       state.events.push(payload);
       eventForm.reset();
-      await saveState();
+      saveState();
       renderCalendars();
       renderEvents();
-      renderWeek();
     });
 
     exportBtn.addEventListener("click", () => {
@@ -770,16 +496,13 @@
       URL.revokeObjectURL(url);
     });
 
-    clearBtn.addEventListener("click", async () => {
+    clearBtn.addEventListener("click", () => {
       if (!confirm("Очистить календари и события?")) return;
       state.calendars = [];
       state.events = [];
-      await saveState();
+      saveState();
       renderCalendars();
       renderEvents();
-      renderWeek();
-      fileStatus.textContent = "Поддерживаются offline-файлы ICS и HTML.";
-      fileStatus.className = "status";
     });
 
     function formatICSDate(value) {
@@ -797,325 +520,9 @@
       );
     }
 
-    function normalizeICSLines(text) {
-      const rawLines = text.split(/\r?\n/);
-      const lines = [];
-      rawLines.forEach((line) => {
-        if (line.startsWith(" ") && lines.length) {
-          lines[lines.length - 1] += line.slice(1);
-        } else {
-          lines.push(line);
-        }
-      });
-      return lines;
-    }
-
-    function parseICSTimestamp(value) {
-      if (!value) return null;
-      const match = value.match(/(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2}))?(Z)?/);
-      if (!match) return null;
-      const [, y, m, d, hh = "00", mm = "00", ss = "00", isUTC] = match;
-      const year = Number(y);
-      const month = Number(m) - 1;
-      const day = Number(d);
-      const hours = Number(hh);
-      const minutes = Number(mm);
-      const seconds = Number(ss);
-      if (isUTC) {
-        return new Date(Date.UTC(year, month, day, hours, minutes, seconds)).toISOString();
-      }
-      return new Date(year, month, day, hours, minutes, seconds).toISOString();
-    }
-
-    function extractICSFromHTML(html) {
-      try {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, "text/html");
-        const pre = doc.querySelector("pre");
-        const text = (pre?.textContent || doc.body?.textContent || html).replace(/\u00a0/g, " ");
-        const begin = text.indexOf("BEGIN:VEVENT");
-        if (begin === -1) return null;
-        const calStart = text.lastIndexOf("BEGIN:VCALENDAR", begin);
-        const calEnd = text.indexOf("END:VCALENDAR", begin);
-        if (calStart !== -1 && calEnd !== -1) {
-          return text.slice(calStart, calEnd + "END:VCALENDAR".length);
-        }
-        return text.slice(begin);
-      } catch (e) {
-        console.warn("Не удалось разобрать HTML как календарь", e);
-        return null;
-      }
-    }
-
-    function parseCalendarText(raw, filename = "") {
-      const lower = raw.trim().toLowerCase();
-      if (lower.includes("begin:vevent")) {
-        return parseICS(raw);
-      }
-      if (filename.endsWith(".html") || lower.startsWith("<") || lower.includes("<html")) {
-        const extracted = extractICSFromHTML(raw);
-        if (extracted && extracted.toLowerCase().includes("begin:vevent")) {
-          return parseICS(extracted);
-        }
-      }
-      return [];
-    }
-
-    function parseICS(text) {
-      const lines = normalizeICSLines(text);
-      const events = [];
-      let current = null;
-
-      lines.forEach((line) => {
-        if (line.startsWith("BEGIN:VEVENT")) {
-          current = {};
-          return;
-        }
-        if (line.startsWith("END:VEVENT")) {
-          if (current?.start && current?.end) {
-            events.push({
-              title: current.title || "Без названия",
-              start: current.start,
-              end: current.end,
-              location: current.location || "",
-            });
-          }
-          current = null;
-          return;
-        }
-        if (!current) return;
-
-        const [rawKey, ...rawValue] = line.split(":");
-        const value = rawValue.join(":");
-        const key = rawKey.split(";")[0];
-
-        if (key === "SUMMARY") current.title = value;
-        if (key === "LOCATION") current.location = value;
-        if (key === "DTSTART") current.start = parseICSTimestamp(value);
-        if (key === "DTEND") current.end = parseICSTimestamp(value);
-      });
-
-      return events.filter((ev) => ev.start && ev.end);
-    }
-
-    async function syncRemoteCalendar(calendar, { silent = false } = {}) {
-      if (!calendar?.sourceUrl) return;
-      try {
-        if (!silent) {
-          remoteStatus.textContent = `Загружаю ${calendar.name}...`;
-          remoteStatus.className = "muted-note";
-        }
-        const res = await fetch(calendar.sourceUrl, { cache: "no-store" });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const text = await res.text();
-        const imported = parseICS(text).map((ev) => ({
-          ...ev,
-          id: crypto.randomUUID(),
-          calendarId: calendar.id,
-          origin: "remote",
-        }));
-
-        state.events = state.events.filter((e) => e.calendarId !== calendar.id || e.origin !== "remote");
-        state.events.push(...imported);
-        calendar.lastSynced = new Date().toISOString();
-        await saveState();
-        renderEvents();
-        renderWeek();
-        if (!silent) {
-          remoteStatus.textContent = `Обновлено: ${calendar.name} (${imported.length} событий).`;
-          remoteStatus.className = "muted-note";
-        }
-      } catch (err) {
-        console.error(err);
-        if (!silent) {
-          remoteStatus.textContent = `Не удалось загрузить ${calendar.name}. Проверьте ссылку или CORS.`;
-          remoteStatus.className = "empty";
-        }
-      }
-    }
-
-    async function refreshAllRemoteCalendars({ announce = true } = {}) {
-      const remoteCalendars = state.calendars.filter((c) => c.type === "remote");
-      if (!remoteCalendars.length) {
-        if (announce) {
-          remoteStatus.textContent = "Нет подключённых ссылок.";
-          remoteStatus.className = "empty";
-        }
-        return;
-      }
-
-      if (announce) {
-        remoteStatus.textContent = "Обновляю подключённые календари...";
-        remoteStatus.className = "muted-note";
-      }
-
-      for (const cal of remoteCalendars) {
-        await syncRemoteCalendar(cal, { silent: !announce });
-      }
-
-      if (announce) {
-        const refreshed = remoteCalendars.filter((c) => c.lastSynced).length;
-        remoteStatus.textContent = `Обновление завершено. Синхронизировано: ${refreshed}/${remoteCalendars.length}.`;
-        remoteStatus.className = "muted-note";
-      }
-      renderCalendars();
-    }
-
-    async function importFileCalendar(file) {
-      if (!file) {
-        fileStatus.textContent = "Сначала выберите файл .ics или .html.";
-        fileStatus.className = "status empty";
-        return;
-      }
-
-      fileStatus.textContent = `Читаю ${file.name}...`;
-      fileStatus.className = "status muted-note";
-      try {
-        const text = await file.text();
-        const imported = parseCalendarText(text, file.name);
-        if (!imported.length) {
-          fileStatus.textContent = "Не удалось извлечь события. Проверьте формат файла.";
-          fileStatus.className = "status empty";
-          return;
-        }
-
-        const calendar = {
-          id: crypto.randomUUID(),
-          name: fileCalendarName.value.trim() || file.name || "Импортированный календарь",
-          color: fileCalendarColor.value,
-          type: "file",
-        };
-
-        const mapped = imported.map((ev) => ({
-          ...ev,
-          id: crypto.randomUUID(),
-          calendarId: calendar.id,
-          origin: "file",
-        }));
-
-        state.calendars.push(calendar);
-        state.events.push(...mapped);
-        await saveState();
-        renderCalendars();
-        renderEvents();
-        renderWeek();
-        fileForm.reset();
-        fileCalendarColor.value = "#a855f7";
-        fileStatus.textContent = `Импортировано ${mapped.length} событий из ${file.name}.`;
-        fileStatus.className = "status muted-note";
-      } catch (e) {
-        console.error(e);
-        fileStatus.textContent = "Ошибка чтения файла. Попробуйте снова.";
-        fileStatus.className = "status empty";
-      }
-    }
-
-    function renderWeek() {
-      weekView.innerHTML = "";
-      const now = new Date();
-      const day = now.getDay();
-      const mondayOffset = (day + 6) % 7;
-      const monday = new Date(now);
-      monday.setDate(now.getDate() - mondayOffset);
-      monday.setHours(0, 0, 0, 0);
-      const friday = new Date(monday);
-      friday.setDate(monday.getDate() + 5);
-
-      const workEvents = state.events.filter((ev) => {
-        const start = new Date(ev.start);
-        return start >= monday && start < friday;
-      });
-
-      for (let i = 0; i < 5; i++) {
-        const dayDate = new Date(monday);
-        dayDate.setDate(monday.getDate() + i);
-        const label = dayDate.toLocaleDateString("ru-RU", {
-          weekday: "long",
-          day: "2-digit",
-          month: "short",
-        });
-
-        const column = document.createElement("div");
-        column.className = "day";
-        const heading = document.createElement("h3");
-        heading.textContent = label;
-        column.appendChild(heading);
-
-        const dayEvents = workEvents
-          .filter((ev) => new Date(ev.start).toDateString() === dayDate.toDateString())
-          .sort((a, b) => new Date(a.start) - new Date(b.start));
-
-        if (!dayEvents.length) {
-          const empty = document.createElement("p");
-          empty.className = "muted-note";
-          empty.textContent = "Нет событий";
-          column.appendChild(empty);
-        } else {
-          dayEvents.forEach((ev) => {
-            const cal = state.calendars.find((c) => c.id === ev.calendarId);
-            const item = document.createElement("div");
-            item.className = "event-item";
-            const title = document.createElement("div");
-            title.innerHTML = `<strong>${ev.title}</strong>`;
-            const meta = document.createElement("div");
-            meta.className = "meta";
-            const badge = document.createElement("span");
-            badge.className = "badge";
-            badge.style.background = cal?.color || "#06b6d4";
-            badge.textContent = cal?.name || "Календарь";
-            const time = document.createElement("span");
-            time.textContent = `${formatDateTime(ev.start)} → ${formatDateTime(ev.end)}`;
-            meta.append(badge, time);
-            item.append(title, meta);
-            column.appendChild(item);
-          });
-        }
-
-        weekView.appendChild(column);
-      }
-    }
-
-    remoteForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const url = remoteForm.remoteUrl.value.trim();
-      if (!url) return;
-      const name = remoteForm.remoteName.value.trim() || new URL(url).hostname;
-      const calendar = {
-        id: crypto.randomUUID(),
-        name,
-        color: remoteForm.remoteColor.value,
-        sourceUrl: url,
-        type: "remote",
-      };
-      state.calendars.push(calendar);
-      await saveState();
-      renderCalendars();
-      renderEvents();
-      renderWeek();
-      remoteForm.reset();
-      remoteForm.remoteColor.value = "#22c55e";
-      await syncRemoteCalendar(calendar);
-    });
-
-    refreshRemote.addEventListener("click", async () => {
-      await refreshAllRemoteCalendars();
-    });
-
-    fileForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const file = fileInput.files?.[0];
-      await importFileCalendar(file);
-    });
-
-    async function init() {
-      await loadState();
-      renderCalendars();
-      renderEvents();
-      renderWeek();
-      refreshAllRemoteCalendars({ announce: false });
-    }
-
-    init();
+    loadState();
+    renderCalendars();
+    renderEvents();
   </script>
 </body>
 </html>
