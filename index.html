@@ -1,1 +1,528 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Единое расписание</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --accent: #06b6d4;
+      --muted: #9ca3af;
+      --text: #e5e7eb;
+      --danger: #f43f5e;
+      --success: #22c55e;
+    }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 15% 20%, rgba(6, 182, 212, 0.12), transparent 25%),
+        radial-gradient(circle at 80% 0%, rgba(244, 63, 94, 0.12), transparent 28%), var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 64px 24px 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 40px;
+      letter-spacing: -0.02em;
+    }
+
+    p.lead {
+      margin: 0 auto;
+      max-width: 720px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 17px;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 48px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, rgba(17, 24, 39, 0.94), rgba(15, 23, 42, 0.94));
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card h2 span.icon {
+      font-size: 22px;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      font-size: 15px;
+      transition: border-color 0.15s ease, transform 0.08s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 2px solid rgba(6, 182, 212, 0.35);
+      border-color: var(--accent);
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      margin-top: 14px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      background: linear-gradient(120deg, #06b6d4, #22c55e);
+      color: #0b0f1a;
+      box-shadow: 0 10px 28px rgba(6, 182, 212, 0.25);
+    }
+
+    button.secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      box-shadow: none;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+
+    .pill .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .pill .count {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .calendar-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .events {
+      display: grid;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .event {
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+
+    .event .meta {
+      color: var(--muted);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .event .badge {
+      padding: 4px 9px;
+      border-radius: 999px;
+      color: #0b0f1a;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .empty {
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      border: 1px dashed rgba(255, 255, 255, 0.12);
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .toolbar button {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    @media (max-width: 640px) {
+      header {
+        padding-top: 44px;
+      }
+
+      h1 {
+        font-size: 32px;
+      }
+
+      .event {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="pill">
+      <span class="dot" style="background:#22c55e"></span>
+      <span class="count" id="calendarCount">0</span> календарей объединено
+    </p>
+    <h1>Единое расписание</h1>
+    <p class="lead">
+      Подключайте личные и рабочие календари, добавляйте события и выгружайте объединённое расписание в формате ICS.
+      Страница хранит данные только в вашем браузере.
+    </p>
+  </header>
+
+  <main>
+    <section class="grid">
+      <article class="card">
+        <h2><span class="icon">📅</span>Календари</h2>
+        <form id="calendarForm">
+          <label for="calendarName">Название</label>
+          <input id="calendarName" name="calendarName" placeholder="Например, Работа" required />
+
+          <label for="calendarColor">Цвет</label>
+          <input id="calendarColor" name="calendarColor" type="color" value="#06b6d4" />
+
+          <button type="submit">Добавить календарь</button>
+        </form>
+
+        <div class="calendar-list" id="calendarList"></div>
+      </article>
+
+      <article class="card">
+        <h2><span class="icon">🗂️</span>События</h2>
+        <form id="eventForm">
+          <label for="eventCalendar">Календарь</label>
+          <select id="eventCalendar" required></select>
+
+          <label for="eventTitle">Название события</label>
+          <input id="eventTitle" placeholder="Встреча с командой" required />
+
+          <label for="eventStart">Начало</label>
+          <input id="eventStart" type="datetime-local" required />
+
+          <label for="eventEnd">Окончание</label>
+          <input id="eventEnd" type="datetime-local" required />
+
+          <label for="eventLocation">Место/ссылка</label>
+          <input id="eventLocation" placeholder="Zoom, офис или адрес" />
+
+          <button type="submit">Добавить событие</button>
+        </form>
+      </article>
+    </section>
+
+    <section class="card">
+      <div class="toolbar">
+        <button id="exportBtn">Экспорт в ICS</button>
+        <button class="secondary" id="clearBtn">Очистить всё</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="icon">🧭</span>Ближайшие события</h2>
+      <div class="events" id="events"></div>
+    </section>
+  </main>
+
+  <script>
+    const calendarForm = document.getElementById("calendarForm");
+    const eventForm = document.getElementById("eventForm");
+    const calendarList = document.getElementById("calendarList");
+    const eventsEl = document.getElementById("events");
+    const calendarCount = document.getElementById("calendarCount");
+    const eventCalendar = document.getElementById("eventCalendar");
+    const exportBtn = document.getElementById("exportBtn");
+    const clearBtn = document.getElementById("clearBtn");
+
+    const state = {
+      calendars: [],
+      events: [],
+    };
+
+    function saveState() {
+      localStorage.setItem("calendar-hub", JSON.stringify(state));
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem("calendar-hub");
+      if (!saved) return;
+      try {
+        const data = JSON.parse(saved);
+        state.calendars = Array.isArray(data.calendars) ? data.calendars : [];
+        state.events = Array.isArray(data.events) ? data.events : [];
+      } catch (e) {
+        console.warn("Не удалось загрузить сохранённые данные", e);
+      }
+    }
+
+    function formatDateTime(value) {
+      const date = new Date(value);
+      return date.toLocaleString("ru-RU", {
+        day: "2-digit",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
+
+    function renderCalendars() {
+      calendarCount.textContent = state.calendars.length;
+      calendarList.innerHTML = "";
+      eventCalendar.innerHTML = "";
+
+      if (!state.calendars.length) {
+        calendarList.innerHTML = '<p class="empty">Добавьте хотя бы один календарь, чтобы планировать встречи.</p>';
+        const placeholder = document.createElement("option");
+        placeholder.textContent = "Сначала создайте календарь";
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        eventCalendar.appendChild(placeholder);
+        eventCalendar.disabled = true;
+        return;
+      }
+
+      eventCalendar.disabled = false;
+      state.calendars.forEach((cal) => {
+        const pill = document.createElement("span");
+        pill.className = "pill";
+        const dot = document.createElement("span");
+        dot.className = "dot";
+        dot.style.background = cal.color;
+        const name = document.createElement("span");
+        name.textContent = cal.name;
+        const count = document.createElement("span");
+        count.className = "count";
+        const eventCount = state.events.filter((e) => e.calendarId === cal.id).length;
+        count.textContent = `${eventCount}`;
+        pill.append(dot, name, count);
+        calendarList.appendChild(pill);
+
+        const option = document.createElement("option");
+        option.value = cal.id;
+        option.textContent = cal.name;
+        eventCalendar.appendChild(option);
+      });
+    }
+
+    function renderEvents() {
+      eventsEl.innerHTML = "";
+      if (!state.events.length) {
+        eventsEl.innerHTML = '<p class="empty">Событий пока нет — добавьте первое!</p>';
+        return;
+      }
+
+      const sorted = [...state.events].sort(
+        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+      );
+
+      sorted.forEach((event) => {
+        const cal = state.calendars.find((c) => c.id === event.calendarId);
+        const wrapper = document.createElement("div");
+        wrapper.className = "event";
+
+        const title = document.createElement("div");
+        title.innerHTML = `<strong>${event.title}</strong>`;
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+
+        const badge = document.createElement("span");
+        badge.className = "badge";
+        badge.style.background = cal?.color || "#06b6d4";
+        badge.textContent = cal?.name || "Календарь";
+
+        const time = document.createElement("span");
+        time.textContent = `${formatDateTime(event.start)} → ${formatDateTime(event.end)}`;
+
+        const location = document.createElement("span");
+        location.textContent = event.location || "Онлайн";
+
+        meta.append(badge, time, location);
+        wrapper.append(title, meta);
+        eventsEl.appendChild(wrapper);
+      });
+    }
+
+    calendarForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = calendarForm.calendarName.value.trim();
+      if (!name) return;
+
+      state.calendars.push({
+        id: crypto.randomUUID(),
+        name,
+        color: calendarForm.calendarColor.value,
+      });
+
+      calendarForm.reset();
+      calendarForm.calendarColor.value = "#06b6d4";
+      saveState();
+      renderCalendars();
+    });
+
+    eventForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!state.calendars.length) return;
+
+      const payload = {
+        id: crypto.randomUUID(),
+        calendarId: eventCalendar.value,
+        title: eventForm.eventTitle.value.trim(),
+        start: eventForm.eventStart.value,
+        end: eventForm.eventEnd.value,
+        location: eventForm.eventLocation.value.trim(),
+      };
+
+      if (!payload.title || !payload.start || !payload.end) return;
+      if (new Date(payload.end) <= new Date(payload.start)) {
+        alert("Окончание должно быть позже начала события.");
+        return;
+      }
+
+      state.events.push(payload);
+      eventForm.reset();
+      saveState();
+      renderCalendars();
+      renderEvents();
+    });
+
+    exportBtn.addEventListener("click", () => {
+      if (!state.events.length) {
+        alert("Нет событий для экспорта.");
+        return;
+      }
+
+      const ics = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Calendar Hub//EN",
+      ];
+
+      state.events.forEach((event) => {
+        const cal = state.calendars.find((c) => c.id === event.calendarId);
+        const uid = `${event.id}@calendarhub`;
+        ics.push("BEGIN:VEVENT");
+        ics.push(`UID:${uid}`);
+        ics.push(`SUMMARY:${event.title}`);
+        ics.push(`DTSTART:${formatICSDate(event.start)}`);
+        ics.push(`DTEND:${formatICSDate(event.end)}`);
+        if (event.location) ics.push(`LOCATION:${event.location}`);
+        if (cal) ics.push(`CATEGORIES:${cal.name}`);
+        ics.push("END:VEVENT");
+      });
+
+      ics.push("END:VCALENDAR");
+      const blob = new Blob([ics.join("\n")], { type: "text/calendar" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "merged-calendar.ics";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    clearBtn.addEventListener("click", () => {
+      if (!confirm("Очистить календари и события?")) return;
+      state.calendars = [];
+      state.events = [];
+      saveState();
+      renderCalendars();
+      renderEvents();
+    });
+
+    function formatICSDate(value) {
+      const date = new Date(value);
+      const pad = (n) => String(n).padStart(2, "0");
+      return (
+        date.getUTCFullYear() +
+        pad(date.getUTCMonth() + 1) +
+        pad(date.getUTCDate()) +
+        "T" +
+        pad(date.getUTCHours()) +
+        pad(date.getUTCMinutes()) +
+        pad(date.getUTCSeconds()) +
+        "Z"
+      );
+    }
+
+    loadState();
+    renderCalendars();
+    renderEvents();
+  </script>
+</body>
+</html>
